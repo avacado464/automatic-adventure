@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Security Check</title>
+<title>Loading...</title>
 
 <style>
     html, body {
@@ -10,130 +10,59 @@
         padding: 0;
         height: 100%;
         width: 100%;
-        background: white;
-        overflow: hidden;
-        font-family: monospace;
+        font-family: Arial, sans-serif;
     }
 
-    #flash {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: black;
-        opacity: 0;
-        transition: opacity 0.2s ease-in;
-        z-index: 9999;
-    }
-
-    #terminal {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: black;
-        color: #00ff00;
-        padding: 30px;
-        font-size: 18px;
-        display: none;
-        white-space: pre-line;
-    }
-
-    #startScreen {
+    #content {
         height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: Arial;
     }
 
-    button {
-        padding: 15px 30px;
-        font-size: 18px;
-        cursor: pointer;
+    #whiteOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: white;
+        z-index: 9999;
+        display: none;
     }
 </style>
 </head>
 
 <body>
 
-<div id="startScreen">
-    <button onclick="startDemo()">Tap to Continue</button>
+<div id="content">
+    <button onclick="runDemo()" style="padding:15px 30px; font-size:18px;">
+        Tap to Continue
+    </button>
 </div>
 
-<div id="flash"></div>
-<div id="terminal"></div>
+<div id="whiteOverlay"></div>
 
 <script>
-function startDemo() {
+function runDemo() {
 
-    // Request fullscreen (allowed after user interaction)
+    // Optional fullscreen for stronger effect
     if (document.documentElement.requestFullscreen) {
         document.documentElement.requestFullscreen();
     }
 
-    document.getElementById("startScreen").style.display = "none";
+    const overlay = document.getElementById("whiteOverlay");
 
-    const flash = document.getElementById("flash");
-    const terminal = document.getElementById("terminal");
+    // Show full white screen instantly
+    overlay.style.display = "block";
 
-    // Sudden blackout flash
-    flash.style.opacity = "1";
-
+    // After 5 seconds remove it
     setTimeout(() => {
-        terminal.style.display = "block";
-    }, 200);
-
-    const lines = [
-        "Establishing Secure Connection...",
-        "Scanning Device...",
-        "Reading System Configuration...",
-        "Checking Network Ports...",
-        "Accessing Stored Data...",
-        "Uploading Logs...",
-        "Finalizing..."
-    ];
-
-    let i = 0;
-
-    function typeLine() {
-        if (i < lines.length) {
-            terminal.innerHTML += lines[i] + "\n";
-            i++;
-            setTimeout(typeLine, 600);
-        }
-    }
-
-    setTimeout(typeLine, 400);
-
-    setTimeout(() => {
-        document.body.innerHTML = `
-            <div style="
-                height:100vh;
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                text-align:center;
-                font-family:Arial;
-                padding:20px;
-                background:white;
-                color:black;
-            ">
-                <div>
-                    <h1>⚠ Cyber Security Awareness Simulation</h1>
-                    <p>
-                    This was a controlled demonstration.<br><br>
-                    If this were real, your data could have been compromised.
-                    </p>
-                    <p><strong>Always verify before scanning unknown QR codes.</strong></p>
-                </div>
-            </div>
-        `;
+        overlay.style.display = "none";
     }, 5000);
 }
 </script>
 
 </body>
 </html>
+
