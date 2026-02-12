@@ -2,16 +2,26 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>QR Smart Screen</title>
+<title>Smart Screen</title>
 <style>
-body { margin:0; height:100vh; display:flex; justify-content:center; align-items:center; background:black; color:white; font-family:Arial; text-align:center; }
+body {
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:black;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
 #content img { width:300px; }
 </style>
 </head>
 <body>
 
 <div id="content">
-    <img src="qr.png" alt="QR Code">
+  <img src="qr.png" alt="QR Code">
 </div>
 
 <script type="module">
@@ -20,44 +30,47 @@ import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasej
 
 // 🔹 Paste your Firebase config here
 const firebaseConfig = {
-  apiKey: "AIzaSyB-z8NA_ITV1buHoMw1j6-HGE1fSKO3BdA",
-  authDomain: "qr-awareness-demo.firebaseapp.com",
-  projectId: "qr-awareness-demo",
-  storageBucket: "qr-awareness-demo.firebasestorage.app",
-  messagingSenderId: "547774322814",
-  appId: "1:547774322814:web:57b5be3342790dbbc8602f",
-  measurementId: "G-VF1Y056SHK"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "XXXXXXXXXXXX",
+  appId: "XXXXXXXXXXXX"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const screenRef = doc(db, "control", "state");
 
-// Real-time listener for QR scan
 onSnapshot(screenRef, (docSnap) => {
-    if (!docSnap.exists()) return;
-    const data = docSnap.data();
-    const now = Date.now();
+  if (!docSnap.exists()) return;
 
-    // Check if QR should be hidden / screen blacked out
-    if (data.lockUntil && now < data.lockUntil) {
-        document.body.style.background = "black";
-        document.getElementById("content").innerHTML = "";
+  const data = docSnap.data();
+  const now = Date.now();
 
-        if (now >= data.blackUntil) {
-            document.getElementById("content").innerHTML =
-                "<h1>98% of cyber attacks occur due to human error.</h1>";
-        }
-    } else {
-        // QR visible
-        document.body.style.background = "black";
-        document.getElementById("content").innerHTML =
-            '<img src="qr.png" alt="QR Code">';
+  // Check if screen should be locked
+  if (data.lockUntil && now < data.lockUntil) {
+    // Hide QR and black screen
+    document.getElementById("content").innerHTML = "";
+    document.body.style.background = "black";
+
+    // Show awareness after blackTime
+    if (data.blackUntil && now >= data.blackUntil) {
+      document.getElementById("content").innerHTML =
+        "<h1>98% of cyber attacks occur due to human error.</h1>";
     }
+  } else {
+    // QR visible
+    document.body.style.background = "black";
+    document.getElementById("content").innerHTML =
+      '<img src="qr.png" alt="QR Code">';
+  }
 });
 </script>
 
 </body>
 </html>
+
+
 
 
