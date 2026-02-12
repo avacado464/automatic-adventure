@@ -28,7 +28,7 @@ body {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔹 Paste your Firebase config here
+// 🔹 Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyB-z8NA_ITV1buHoMw1j6-HGE1fSKO3BdA",
   authDomain: "qr-awareness-demo.firebaseapp.com",
@@ -44,33 +44,38 @@ const db = getFirestore(app);
 const screenRef = doc(db, "control", "state");
 
 onSnapshot(screenRef, (docSnap) => {
-  if (!docSnap.exists()) return;
+    if (!docSnap.exists()) return;
 
-  const data = docSnap.data();
-  const now = Date.now();
+    const data = docSnap.data();
+    const now = Date.now();
+    const contentDiv = document.getElementById("content");
 
-  // Check if screen should be locked
-  if (data.lockUntil && now < data.lockUntil) {
-    // Hide QR and black screen
-    document.getElementById("content").innerHTML = "";
-    document.body.style.background = "black";
+    if (data.lockUntil && now < data.lockUntil) {
+        // 1️⃣ Hide QR & make screen black
+        contentDiv.innerHTML = "";
+        document.body.style.background = "black";
 
-    // Show awareness after blackTime
-    if (data.blackUntil && now >= data.blackUntil) {
-      document.getElementById("content").innerHTML =
-        "<h1>98% of cyber attacks occur due to human error.</h1>";
+        // 2️⃣ Show first quote after blackTime
+        if (data.blackUntil && now >= data.blackUntil) {
+            contentDiv.innerHTML = "<h1>98% of cyber attacks occur due to human error.</h1>";
+
+            // 3️⃣ After 5 seconds, remove quote and show awareness message
+            setTimeout(() => {
+                contentDiv.innerHTML = "<h1>Now you have clicked the link — this could have been a real attack.<br>Always be careful with unknown links.</h1>";
+            }, 5000); // Quote visible for 5s
+        }
+    } else {
+        // QR visible
+        document.body.style.background = "black";
+        contentDiv.innerHTML = '<img src="qr.png" alt="QR Code">';
     }
-  } else {
-    // QR visible
-    document.body.style.background = "black";
-    document.getElementById("content").innerHTML =
-      '<img src="qr.png" alt="QR Code">';
-  }
 });
 </script>
 
 </body>
 </html>
+
+
 
 
 
