@@ -1,125 +1,61 @@
+
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Screen Freeze</title>
-    <style>
-        body { 
-            margin: 0; 
-            padding: 0; 
-            overflow: hidden; 
-            background: #000;
-            user-select: none;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-        }
-        #freeze-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #000;
-            z-index: 999999;
-            pointer-events: none; /* Initially transparent */
-            transition: opacity 0.1s;
-        }
-        .frozen {
-            pointer-events: all !important;
-            cursor: none !important;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>QR Smart Screen</title>
+<style>
+body { margin:0; height:100vh; display:flex; justify-content:center; align-items:center; background:black; color:white; font-family:Arial; text-align:center; }
+#content img { width:300px; }
+</style>
 </head>
 <body>
-    <div id="freeze-overlay" class="frozen"></div>
 
-    <script>
-        let freezeActive = false;
-        let freezeTimeout;
+<div id="content">
+    <img src="qr.png" alt="QR Code">
+</div>
 
-        function infiniteLoop() {
-            while (freezeActive) {
-                // CPU-intensive loop to block JS thread
-                let i = 0;
-                while (i < 100000000) i++;
-            }
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔹 Paste your Firebase config here
+const firebaseConfig = {
+  apiKey: "AIzaSyB-z8NA_ITV1buHoMw1j6-HGE1fSKO3BdA",
+  authDomain: "qr-awareness-demo.firebaseapp.com",
+  projectId: "qr-awareness-demo",
+  storageBucket: "qr-awareness-demo.firebasestorage.app",
+  messagingSenderId: "547774322814",
+  appId: "1:547774322814:web:57b5be3342790dbbc8602f",
+  measurementId: "G-VF1Y056SHK"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const screenRef = doc(db, "control", "state");
+
+onSnapshot(screenRef, (docSnap) => {
+    if (!docSnap.exists()) return;
+    const data = docSnap.data();
+    const now = Date.now();
+
+    if (data.lockUntil && now < data.lockUntil) {
+        document.body.style.background = "black";
+        document.getElementById("content").innerHTML = "";
+
+        if (now >= data.blackUntil) {
+            document.getElementById("content").innerHTML =
+                "<h1>98% of cyber attacks occur due to human error.</h1>";
         }
+    } else {
+        document.getElementById("content").innerHTML =
+            '<img src="qr.png" alt="QR Code">';
+        document.body.style.background = "black";
+    }
+});
+</script>
 
-        function lockScreen() {
-            freezeActive = true;
-            
-            // Fullscreen lock
-            const doc = document.documentElement;
-            if (doc.requestFullscreen) {
-                doc.requestFullscreen();
-            } else if (doc.webkitRequestFullscreen) {
-                doc.webkitRequestFullscreen();
-            } else if (doc.mozRequestFullScreen) {
-                doc.mozRequestFullScreen();
-            }
-            
-            // Block all events
-            document.addEventListener('keydown', blockEvent, true);
-            document.addEventListener('keyup', blockEvent, true);
-            document.addEventListener('mousedown', blockEvent, true);
-            document.addEventListener('mouseup', blockEvent, true);
-            document.addEventListener('touchstart', blockEvent, true);
-            document.addEventListener('touchend', blockEvent, true);
-            document.addEventListener('contextmenu', blockEvent, true);
-            
-            // Start CPU blocking (runs in main thread)
-            setTimeout(() => {
-                // Small delay then freeze
-                freezeTimeout = setTimeout(() => {
-                    // Main freeze starts here
-                }, 100);
-            }, 100);
-        }
-
-        function blockEvent(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            e.stopImmediatePropagation();
-            return false;
-        }
-
-        function unfreeze() {
-            freezeActive = false;
-            clearTimeout(freezeTimeout);
-            
-            // Exit fullscreen
-            if (document.exitFullscreen) document.exitFullscreen();
-            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-            else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-            
-            // Remove event blockers
-            ['keydown', 'keyup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'contextmenu'].forEach(event => {
-                document.removeEventListener(event, blockEvent, true);
-            });
-            
-            // Redirect to normal page
-            window.location.href = 'https://your-domain.com/normal-page';
-        }
-
-        // Start freeze on load
-        window.onload = function() {
-            lockScreen();
-            
-            // Exact 5 second freeze
-            setTimeout(unfreeze, 5000);
-        };
-
-        // Prevent right-click/inspect
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = e => {
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
-                e.preventDefault();
-                return false;
-            }
-        };
-    </script>
 </body>
 </html>
-
-
