@@ -26,7 +26,7 @@ body {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // 🔹 Firebase config
 const firebaseConfig = {
@@ -43,6 +43,14 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const screenRef = doc(db, "control", "state");
 
+// 🔹 Option 2: Automatic reset of timestamps on page load (for testing)
+await setDoc(screenRef, {
+  lastScan: 0,
+  lockUntil: 0,
+  blackUntil: 0
+});
+
+// 🔹 Real-time listener for blackout and awareness
 onSnapshot(screenRef, (docSnap) => {
     if (!docSnap.exists()) return;
 
@@ -74,6 +82,7 @@ onSnapshot(screenRef, (docSnap) => {
 
 </body>
 </html>
+
 
 
 
