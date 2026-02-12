@@ -3,77 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Loading...</title>
+<title>Awareness Message</title>
 
 <style>
-    html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-        background: black;
-        font-family: Arial, sans-serif;
-    }
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 
-    #overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: white;
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.2s ease-in;
-    }
+#freezeScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 9999;
+    cursor: none;
+    animation: glitch 0.15s infinite;
+}
 
-    #message {
-        color: black;
-        font-size: 1.4rem;
-        text-align: center;
-        max-width: 80%;
-        opacity: 0;
-        transition: opacity 2s ease-in-out;
-    }
+h1 {
+    font-size: 32px;
+    color: black;
+    max-width: 90%;
+}
+
+/* subtle flicker effect */
+@keyframes glitch {
+    0% { opacity: 1; }
+    50% { opacity: 0.96; }
+    100% { opacity: 1; }
+}
 </style>
 </head>
-
 <body>
 
-<div id="overlay">
-    <div id="message">
-        98% of cyber attacks occur due to human error.
-    </div>
+<div id="freezeScreen">
+    <h1>98% of cyber attacks occur due to human error</h1>
 </div>
 
 <script>
-window.onload = function() {
+// Optional: hide cursor visually
+document.body.style.cursor = "none";
 
-    const overlay = document.getElementById("overlay");
-    const message = document.getElementById("message");
-
-    // Instant white screen takeover
-    overlay.style.opacity = "1";
-
-    // After 5 seconds show quote
-    setTimeout(() => {
-        document.title = ""; // remove title for cleaner feel
-        message.style.opacity = "1";
-    }, 5000);
-
-    // Fade out quote slowly
-    setTimeout(() => {
-        message.style.opacity = "0";
-    }, 9000);
-
-    // Silent vanish
-    setTimeout(() => {
-        window.location.replace("empty.html");
-    }, 11000);
-};
+// Optional: redirect after 5 seconds
+setTimeout(() => {
+    window.location.href = "empty.html"; // or remove this line if no redirect needed
+}, 5000);
 </script>
 
 </body>
