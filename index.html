@@ -50,7 +50,7 @@ await setDoc(screenRef, {
   blackUntil: 0
 });
 
-// 🔹 Real-time listener for blackout and awareness
+// 🔹 Real-time listener for blackout and awareness sequence
 onSnapshot(screenRef, (docSnap) => {
     if (!docSnap.exists()) return;
 
@@ -59,30 +59,37 @@ onSnapshot(screenRef, (docSnap) => {
     const contentDiv = document.getElementById("content");
 
     if (data.lockUntil && now < data.lockUntil) {
-        // 1️⃣ Hide QR & make screen black
+        // 1️⃣ Hide QR & black screen
         contentDiv.innerHTML = "";
         document.body.style.background = "black";
 
-        // 2️⃣ Show first quote after blackTime
-        if (data.blackUntil && now >= data.blackUntil) {
-            contentDiv.innerHTML = "<h1>98% of cyber attacks occur due to human error.</h1>";
+        // 2️⃣ Trigger sequence once
+        if (!window.awarenessTriggered) {
+            window.awarenessTriggered = true;
 
-            // 3️⃣ After 5 seconds, remove quote and show awareness message
+            const blackTime = data.blackUntil - now;
             setTimeout(() => {
-                contentDiv.innerHTML = "<h1>Now you have clicked the link — this could have been a real attack.<br>Always be careful with unknown links.</h1>";
-            }, 5000); // Quote visible for 5s
+                // 3️⃣ Show first quote
+                contentDiv.innerHTML = "<h1>98% of cyber attacks occur due to human error.</h1>";
+
+                // 4️⃣ After 5s, show final awareness
+                setTimeout(() => {
+                    contentDiv.innerHTML = "<h1>Now you have clicked the link — this could have been a real attack.<br>Always be careful with unknown links.</h1>";
+                }, 5000);
+
+            }, blackTime > 0 ? blackTime : 0);
         }
     } else {
         // QR visible
         document.body.style.background = "black";
         contentDiv.innerHTML = '<img src="qr.png" alt="QR Code">';
+        window.awarenessTriggered = false; // reset for next scan
     }
 });
 </script>
 
 </body>
 </html>
-
 
 
 
