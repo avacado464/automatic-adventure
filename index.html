@@ -3,50 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QR Blank Screen</title>
+<title>Loading...</title>
 
 <style>
     html, body {
         margin: 0;
         padding: 0;
-        overflow: hidden;
-        background: black;
         height: 100%;
+        width: 100%;
+        background: white;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
     }
 
-    .fullscreen-black {
+    #message {
         position: fixed;
         inset: 0;
-        width: 100vw;
-        height: 100dvh;
-        background: #000;
-        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 2s ease;
+        padding: 20px;
+    }
+
+    .fade-in {
+        opacity: 1;
+    }
+
+    .fade-out {
+        opacity: 0;
     }
 </style>
 </head>
 
 <body>
 
-<div id="blackout" class="fullscreen-black"></div>
-
 <script>
-window.addEventListener("DOMContentLoaded", () => {
-    const blackout = document.getElementById('blackout');
+document.addEventListener("DOMContentLoaded", () => {
 
-    // Attempt fullscreen (may fail without interaction)
-    const el = document.documentElement;
-    if (el.requestFullscreen) {
-        el.requestFullscreen().catch(() => {});
-    }
+    // Blank screen immediately
+    document.body.innerHTML = "";
+    document.body.style.background = "white";
 
-    // After 5 seconds remove blackout
+    // After 5 seconds show message
     setTimeout(() => {
-        if (document.fullscreenElement && document.exitFullscreen) {
-            document.exitFullscreen();
-        }
-        blackout.remove();
-        document.body.style.background = "white";
+
+        const msg = document.createElement("div");
+        msg.id = "message";
+        msg.innerText = "98% of cyber attacks occur due to human error";
+
+        document.body.appendChild(msg);
+
+        // Trigger fade in
+        setTimeout(() => {
+            msg.classList.add("fade-in");
+        }, 100);
+
+        // Fade out after 4 seconds visible
+        setTimeout(() => {
+            msg.classList.remove("fade-in");
+            msg.classList.add("fade-out");
+        }, 4000);
+
     }, 5000);
+
 });
 </script>
 
