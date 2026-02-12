@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title></title>
 
 <style>
     html, body {
@@ -14,7 +15,6 @@
         justify-content: center;
         align-items: center;
         font-family: Arial, sans-serif;
-        color: #9a9a9a;
         text-align: center;
     }
 
@@ -22,7 +22,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 28px;
+        gap: 25px;
     }
 
     canvas {
@@ -33,8 +33,8 @@
 
     .message {
         font-size: 0.95rem;
-        letter-spacing: 0.6px;
         color: #7a7a7a;
+        letter-spacing: 0.5px;
     }
 </style>
 </head>
@@ -51,17 +51,14 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <script>
-    const url = "https://avacado464.github.io/automatic-adventure/";
+    const targetURL = "https://avacado464.github.io/automatic-adventure/index.html";
 
     QRCode.toCanvas(
-        document.getElementById('qrcode'),
-        url,
+        document.getElementById("qrcode"),
+        targetURL,
         {
             width: 260,
             margin: 2
         }
     );
 </script>
-
-</body>
-</html>
