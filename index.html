@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,71 +10,74 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        width: 100%;
-        background: white;
         overflow: hidden;
+        background: black;
         font-family: Arial, sans-serif;
     }
 
     #overlay {
         position: fixed;
-        inset: 0;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
         background: white;
         z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.2s ease-in;
     }
 
     #message {
-        position: fixed;
-        inset: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        color: black;
+        font-size: 1.4rem;
         text-align: center;
-        font-size: 30px;
-        font-weight: bold;
+        max-width: 80%;
         opacity: 0;
-        transition: opacity 2s ease;
-        padding: 20px;
+        transition: opacity 2s ease-in-out;
     }
 </style>
 </head>
 
 <body>
 
-<div id="overlay"></div>
-<div id="message">
-    98% of cyber attacks occur due to human error
+<div id="overlay">
+    <div id="message">
+        98% of cyber attacks occur due to human error.
+    </div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+window.onload = function() {
 
     const overlay = document.getElementById("overlay");
     const message = document.getElementById("message");
 
-    // Keep blank for 5 seconds
+    // Instant white screen takeover
+    overlay.style.opacity = "1";
+
+    // After 5 seconds show quote
     setTimeout(() => {
-        overlay.style.display = "none";
+        document.title = ""; // remove title for cleaner feel
         message.style.opacity = "1";
     }, 5000);
 
-    // Fade out message
+    // Fade out quote slowly
     setTimeout(() => {
         message.style.opacity = "0";
     }, 9000);
 
-    // After fade, simulate disappearance
+    // Silent vanish
     setTimeout(() => {
-        window.location.replace("about:blank");
+        window.location.replace("empty.html");
     }, 11000);
-
-});
+};
 </script>
 
 </body>
 </html>
-
-
 
 
 
