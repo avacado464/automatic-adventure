@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Awareness</title>
+<style>
+body { margin:0; height:100vh; display:flex; justify-content:center; align-items:center; background:black; color:white; font-family:Arial; text-align:center; }
+</style>
+</head>
+<body>
+
+<h1 id="message">Loading...</h1>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// 🔹 Paste your Firebase config here
+const firebaseConfig = {
+  apiKey: "AIzaSyB-z8NA_ITV1buHoMw1j6-HGE1fSKO3BdA",
+  authDomain: "qr-awareness-demo.firebaseapp.com",
+  projectId: "qr-awareness-demo",
+  storageBucket: "qr-awareness-demo.firebasestorage.app",
+  messagingSenderId: "547774322814",
+  appId: "1:547774322814:web:57b5be3342790dbbc8602f",
+  measurementId: "G-VF1Y056SHK"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const screenRef = doc(db, "control", "state");
+
+const now = Date.now();
+const cooldown = 60000;      // 1 minute
+const lockTime = 600000;     // 10 minutes
+const blackTime = 5000;      // 5 seconds
+
+const snap = await getDoc(screenRef);
+
+if (snap.exists() && snap.data().lastScan && now - snap.data().lastScan < cooldown) {
+    document.getElementById("message").innerText =
+        "This link was recently accessed. Please wait before trying again.";
+} else {
+    // First scan or cooldown passed
+    await setDoc(screenRef, {
+        lastScan: now,
+        lockUntil: now + lockTime,
+        blackUntil: now + blackTime
+    });
+
+    document.getElementById("message").innerText = "Loading...";
+    setTimeout(() => {
+        document.getElementById("message").innerText =
+            "98% of cyber attacks occur due to human error.";
+    }, blackTime);
+}
+</script>
+
+</body>
+</html>
