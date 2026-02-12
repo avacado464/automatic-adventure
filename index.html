@@ -2,62 +2,57 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Loading...</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Blank Screen</title>
 
 <style>
     html, body {
         margin: 0;
         padding: 0;
-        height: 100%;
-        width: 100%;
-        font-family: Arial, sans-serif;
         overflow: hidden;
+        background: black;
+        height: 100%;
     }
 
-    #mainContent {
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #whiteOverlay {
+    .fullscreen-black {
         position: fixed;
-        top: 0;
-        left: 0;
+        inset: 0;
         width: 100vw;
-        height: 100vh;
-        background: white;
+        height: 100dvh;
+        background: #000;
         z-index: 9999;
-        display: none;
     }
 </style>
 </head>
 
 <body>
 
-<div id="mainContent">
-    <h2>Welcome</h2>
-</div>
-
-<div id="whiteOverlay"></div>
+<div id="blackout" class="fullscreen-black"></div>
 
 <script>
-window.onload = function() {
+window.addEventListener("DOMContentLoaded", () => {
+    const blackout = document.getElementById('blackout');
 
-    const overlay = document.getElementById("whiteOverlay");
+    // Attempt fullscreen (may fail without interaction)
+    const el = document.documentElement;
+    if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+    }
 
-    // Show full white screen immediately
-    overlay.style.display = "block";
-
-    // Hide after 5 seconds
+    // After 5 seconds remove blackout
     setTimeout(() => {
-        overlay.style.display = "none";
+        if (document.fullscreenElement && document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+        blackout.remove();
+        document.body.style.background = "white";
     }, 5000);
-};
+});
 </script>
 
 </body>
 </html>
+
+
 
 
