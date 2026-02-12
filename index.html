@@ -11,9 +11,9 @@
         padding: 0;
         height: 100%;
         width: 100%;
-        font-family: Arial, sans-serif;
-        overflow: hidden;
         background: white;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
     }
 
     #overlay {
@@ -52,22 +52,28 @@ document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("overlay");
     const message = document.getElementById("message");
 
-    // Keep screen blank for 5 seconds
+    // Keep blank for 5 seconds
     setTimeout(() => {
-        overlay.style.display = "none";   // Remove blank screen
-        message.style.opacity = "1";      // Fade in message
+        overlay.style.display = "none";
+        message.style.opacity = "1";
     }, 5000);
 
-    // Fade out message after 4 seconds visible
+    // Fade out message
     setTimeout(() => {
         message.style.opacity = "0";
     }, 9000);
+
+    // After fade, simulate disappearance
+    setTimeout(() => {
+        window.location.replace("about:blank");
+    }, 11000);
 
 });
 </script>
 
 </body>
 </html>
+
 
 
 
