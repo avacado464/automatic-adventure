@@ -11,9 +11,10 @@
         height: 100%;
         width: 100%;
         font-family: Arial, sans-serif;
+        overflow: hidden;
     }
 
-    #content {
+    #mainContent {
         height: 100vh;
         display: flex;
         justify-content: center;
@@ -35,34 +36,28 @@
 
 <body>
 
-<div id="content">
-    <button onclick="runDemo()" style="padding:15px 30px; font-size:18px;">
-        Tap to Continue
-    </button>
+<div id="mainContent">
+    <h2>Welcome</h2>
 </div>
 
 <div id="whiteOverlay"></div>
 
 <script>
-function runDemo() {
-
-    // Optional fullscreen for stronger effect
-    if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-    }
+window.onload = function() {
 
     const overlay = document.getElementById("whiteOverlay");
 
-    // Show full white screen instantly
+    // Show full white screen immediately
     overlay.style.display = "block";
 
-    // After 5 seconds remove it
+    // Hide after 5 seconds
     setTimeout(() => {
         overlay.style.display = "none";
     }, 5000);
-}
+};
 </script>
 
 </body>
 </html>
+
 
