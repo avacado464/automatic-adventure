@@ -1,72 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Awareness Message</title>
-
-<style>
-body {
-    margin: 0;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-#freezeScreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    z-index: 9999;
-    cursor: none;
-    animation: glitch 0.15s infinite;
-}
-
-h1 {
-    font-size: 32px;
-    color: black;
-    max-width: 90%;
-}
-
-/* subtle flicker effect */
-@keyframes glitch {
-    0% { opacity: 1; }
-    50% { opacity: 0.96; }
-    100% { opacity: 1; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Freeze</title>
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            overflow: hidden; 
+            background: #000;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+        #freeze-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 999999;
+            pointer-events: none; /* Initially transparent */
+            transition: opacity 0.1s;
+        }
+        .frozen {
+            pointer-events: all !important;
+            cursor: none !important;
+        }
+    </style>
 </head>
 <body>
+    <div id="freeze-overlay" class="frozen"></div>
 
-<div id="freezeScreen">
-    <h1>98% of cyber attacks occur due to human error</h1>
-</div>
+    <script>
+        let freezeActive = false;
+        let freezeTimeout;
 
-<script>
-// Optional: hide cursor visually
-document.body.style.cursor = "none";
+        function infiniteLoop() {
+            while (freezeActive) {
+                // CPU-intensive loop to block JS thread
+                let i = 0;
+                while (i < 100000000) i++;
+            }
+        }
 
-// Optional: redirect after 5 seconds
-setTimeout(() => {
-    window.location.href = "empty.html"; // or remove this line if no redirect needed
-}, 5000);
-</script>
+        function lockScreen() {
+            freezeActive = true;
+            
+            // Fullscreen lock
+            const doc = document.documentElement;
+            if (doc.requestFullscreen) {
+                doc.requestFullscreen();
+            } else if (doc.webkitRequestFullscreen) {
+                doc.webkitRequestFullscreen();
+            } else if (doc.mozRequestFullScreen) {
+                doc.mozRequestFullScreen();
+            }
+            
+            // Block all events
+            document.addEventListener('keydown', blockEvent, true);
+            document.addEventListener('keyup', blockEvent, true);
+            document.addEventListener('mousedown', blockEvent, true);
+            document.addEventListener('mouseup', blockEvent, true);
+            document.addEventListener('touchstart', blockEvent, true);
+            document.addEventListener('touchend', blockEvent, true);
+            document.addEventListener('contextmenu', blockEvent, true);
+            
+            // Start CPU blocking (runs in main thread)
+            setTimeout(() => {
+                // Small delay then freeze
+                freezeTimeout = setTimeout(() => {
+                    // Main freeze starts here
+                }, 100);
+            }, 100);
+        }
 
+        function blockEvent(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+        }
+
+        function unfreeze() {
+            freezeActive = false;
+            clearTimeout(freezeTimeout);
+            
+            // Exit fullscreen
+            if (document.exitFullscreen) document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+            
+            // Remove event blockers
+            ['keydown', 'keyup', 'mousedown', 'mouseup', 'touchstart', 'touchend', 'contextmenu'].forEach(event => {
+                document.removeEventListener(event, blockEvent, true);
+            });
+            
+            // Redirect to normal page
+            window.location.href = 'https://your-domain.com/normal-page';
+        }
+
+        // Start freeze on load
+        window.onload = function() {
+            lockScreen();
+            
+            // Exact 5 second freeze
+            setTimeout(unfreeze, 5000);
+        };
+
+        // Prevent right-click/inspect
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = e => {
+            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
+                e.preventDefault();
+                return false;
+            }
+        };
+    </script>
 </body>
 </html>
-
-
 
 
 
