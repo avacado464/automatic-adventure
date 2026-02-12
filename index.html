@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Security Check</title>
+
+<style>
+    body {
+        margin: 0;
+        background: black;
+        color: #00ff00;
+        font-family: monospace;
+        overflow: hidden;
+    }
+
+    #terminal {
+        padding: 20px;
+        font-size: 18px;
+        white-space: pre-line;
+    }
+
+    .blink {
+        animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+        50% { opacity: 0; }
+    }
+</style>
+</head>
+
+<body>
+
+<div id="terminal"></div>
+
+<script>
+const terminal = document.getElementById("terminal");
+
+const lines = [
+    "Initializing remote connection...",
+    "Scanning device...",
+    "Accessing stored credentials...",
+    "Bypassing firewall...",
+    "Extracting data packets...",
+    "Uploading to remote server...",
+    "Finalizing process..."
+];
+
+let i = 0;
+
+function typeLine() {
+    if (i < lines.length) {
+        terminal.innerHTML += lines[i] + "\n";
+        i++;
+        setTimeout(typeLine, 700);
+    }
+}
+
+typeLine();
+
+setTimeout(() => {
+    document.body.style.background = "white";
+    document.body.style.color = "black";
+    document.body.style.display = "flex";
+    document.body.style.justifyContent = "center";
+    document.body.style.alignItems = "center";
+    document.body.style.textAlign = "center";
+
+    document.body.innerHTML = `
+        <div style="max-width:600px; font-family: Arial;">
+            <h1>⚠ Cyber Security Awareness Simulation</h1>
+            <p>
+            This was a controlled demonstration.<br><br>
+            If this were a real malicious QR code,<br>
+            your personal data could have been compromised.
+            </p>
+            <p><strong>Always verify before scanning.</strong></p>
+        </div>
+    `;
+}, 5000);
+</script>
+
+</body>
+</html>
