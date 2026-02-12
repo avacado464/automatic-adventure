@@ -2,9 +2,19 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Awareness</title>
+<title>Scan Page</title>
 <style>
-body { margin:0; height:100vh; display:flex; justify-content:center; align-items:center; background:black; color:white; font-family:Arial; text-align:center; }
+body {
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:black;
+  color:white;
+  font-family:Arial;
+  text-align:center;
+}
 </style>
 </head>
 <body>
@@ -35,28 +45,25 @@ const cooldown = 60000;      // 1 minute
 const lockTime = 600000;     // 10 minutes
 const blackTime = 5000;      // 5 seconds
 
+// Read Firestore
 const snap = await getDoc(screenRef);
 
 if (snap.exists() && snap.data().lastScan && now - snap.data().lastScan < cooldown) {
-    // Cooldown active
-    document.getElementById("message").innerText =
-        "This link was recently accessed. Please wait before trying again.";
+  // Show cooldown message on mobile only
+  document.getElementById("message").innerText =
+    "This link was recently accessed. Please wait before trying again.";
 } else {
-    // First scan or cooldown expired
-    await setDoc(screenRef, {
-        lastScan: now,
-        lockUntil: now + lockTime,
-        blackUntil: now + blackTime
-    });
+  // Update Firestore to trigger blackout on laptop
+  await setDoc(screenRef, {
+    lastScan: now,
+    lockUntil: now + lockTime,
+    blackUntil: now + blackTime
+  });
 
-    document.getElementById("message").innerText = "Loading...";
-    setTimeout(() => {
-        document.getElementById("message").innerText =
-            "98% of cyber attacks occur due to human error.";
-    }, blackTime);
+  document.getElementById("message").innerText =
+    "Thank you for scanning. Awareness triggered on the smart screen.";
 }
 </script>
 
 </body>
 </html>
-
