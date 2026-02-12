@@ -38,10 +38,11 @@ const blackTime = 5000;      // 5 seconds
 const snap = await getDoc(screenRef);
 
 if (snap.exists() && snap.data().lastScan && now - snap.data().lastScan < cooldown) {
+    // Cooldown active
     document.getElementById("message").innerText =
         "This link was recently accessed. Please wait before trying again.";
 } else {
-    // First scan or cooldown passed
+    // First scan or cooldown expired
     await setDoc(screenRef, {
         lastScan: now,
         lockUntil: now + lockTime,
@@ -58,3 +59,4 @@ if (snap.exists() && snap.data().lastScan && now - snap.data().lastScan < cooldo
 
 </body>
 </html>
+
